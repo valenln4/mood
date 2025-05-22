@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mood</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4A90E2">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="img/favicon16.png" type="image/x-icon">
+    
+</head>
+<body>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <!-- Sección 1: Elegir emoción -->
+  <div id="section1" class="blur-box text-center w-100 section active" style="max-width: 600px;">
+    <h2 class="mb-4">¿Cómo te sientes hoy?</h2>
+
+    <div id="selectedEmotion">
+      <img id="previewImage" src="img/feliz.png" class="emotion-preview" alt="Emoción">
+      <h5 id="emotionName">Feliz</h5>
+    </div>
+
+    <input type="range" class="form-range mt-4" min="0" max="4" step="1" id="emotionRange">
+
+    <div class="emotion-labels d-flex justify-content-between mt-3">
+      <img src="img/enojado.png" id="label0">
+      <img src="img/tristre.png" id="label1">
+      <img src="img/preocupado.png" id="label2">
+      <img src="img/aburrido.png" id="label3">
+      <img src="img/ansioso.png" id="label4">
+      <img src="img/cansado.png" id="label5">
+      <img src="img/feliz.png" alt="label6">
+      <img src="img/emocionado.png" alt="label7">
+
+    </div>
+
+    <button class="btn btn-light mt-4" onclick="goToSection2()">Siguiente</button>
+  </div>
+
+  <!-- Sección 2: Detalles -->
+  <div id="section2" class="blur-box w-100 section" style="max-width: 600px;">
+    <div class="text-center mb-3">
+      <img id="emotionImage" src="" class="emotion-preview mb-2" alt="Emoción">
+      <h4 id="emotionTitle">Emoción</h4>
+    </div>
+
+    <h6>¿Qué emociones sentiste además?</h6>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Calma" id="extra1"><label class="form-check-label" for="extra1">Calma</label></div>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Estrés" id="extra2"><label class="form-check-label" for="extra2">Estrés</label></div>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Alegría" id="extra3"><label class="form-check-label" for="extra3">Alegría</label></div>
+
+    <h6 class="mt-3">¿Qué influyó en tu estado?</h6>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Trabajo" id="factor1"><label class="form-check-label" for="factor1">Trabajo</label></div>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Relaciones" id="factor2"><label class="form-check-label" for="factor2">Relaciones</label></div>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Salud" id="factor3"><label class="form-check-label" for="factor3">Salud</label></div>
+
+    <div class="mt-3">
+      <label for="comentario" class="form-label">¿Quieres escribir algo?</label>
+      <textarea class="form-control" id="comentario" rows="3" placeholder="Escribe aquí..."></textarea>
+    </div>
+
+    <button class="btn btn-success mt-4 w-100" onclick="guardar()">Guardar</button>
+  </div>
+
+  <!-- Sección 3: Resumen -->
+  <div id="section3" class="blur-box text-white text-start w-100 section" style="max-width: 600px;">
+    <h4>Resumen del día</h4>
+    <p><strong>Fecha:</strong> <span id="resFecha"></span></p>
+    <p><strong>Emoción principal:</strong> <span id="resEmocion"></span></p>
+    <p><strong>Otras emociones:</strong> <span id="resExtras"></span></p>
+    <p><strong>Factores:</strong> <span id="resFactores"></span></p>
+    <p><strong>Comentario:</strong></p>
+    <p id="resComentario" class="border rounded p-2 bg-white text-dark"></p>
+    <div class="text-center mt-4">
+      <button class="btn btn-outline-light" onclick="mostrarHistorialYIr()">Ver historial</button>
+    </div>
+  </div>
+
+  <!-- Sección 4: Historial -->
+  <div id="section4" class="blur-box text-white w-100 section" style="max-width: 600px;">
+    <h4>Historial de emociones</h4>
+    <div id="historial"></div>
+    <div class="text-center mt-3">
+      <button class="btn btn-outline-light" onclick="volverInicio()">Volver al inicio</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const emotions = [
+    { name: "Enojado", image: "img/enojado.png" },
+    { name: "Triste", image: "img/tristre.png" },
+    { name: "Ansioso", image: "img/ansioso.png" },
+    { name: "Feliz", image: "img/feliz.png" },
+    { name: "Emocionado", image: "img/emocionado.png" },
+  ];
+
+  const range = document.getElementById("emotionRange");
+  const previewImage = document.getElementById("previewImage");
+  const emotionName = document.getElementById("emotionName");
+
+  let selectedIndex = 0;
+
+  function updateEmotion(index) {
+    selectedIndex = index;
+    previewImage.src = emotions[index].image;
+    emotionName.textContent = emotions[index].name;
+    emotions.forEach((_, i) => {
+      const label = document.getElementById("label" + i);
+      label.classList.toggle("selected", i === index);
+    });
+  }
+
+  range.addEventListener("input", (e) => updateEmotion(e.target.value));
+  updateEmotion(0);
+
+  function goToSection2() {
+    document.getElementById("section1").classList.remove("active");
+    document.getElementById("section2").classList.add("active");
+    document.getElementById("emotionImage").src = emotions[selectedIndex].image;
+    document.getElementById("emotionTitle").textContent = emotions[selectedIndex].name;
+  }
+
+  function guardar() {
+    const fecha = new Date().toLocaleString();
+    const extras = [...document.querySelectorAll('#section2 input[type=checkbox]:not([id^=factor])')].filter(cb => cb.checked).map(cb => cb.value);
+    const factores = [...document.querySelectorAll('#section2 input[id^=factor]')].filter(cb => cb.checked).map(cb => cb.value);
+    const comentario = document.getElementById("comentario").value;
+
+    const registro = {
+      fecha,
+      emocion: emotions[selectedIndex].name,
+      extras,
+      factores,
+      comentario
+    };
+
+    const registrosPrevios = JSON.parse(localStorage.getItem("emociones")) || [];
+    registrosPrevios.push(registro);
+    localStorage.setItem("emociones", JSON.stringify(registrosPrevios));
+
+    document.getElementById("resFecha").textContent = fecha;
+    document.getElementById("resEmocion").textContent = registro.emocion;
+    document.getElementById("resExtras").textContent = extras.length ? extras.join(", ") : "Ninguna";
+    document.getElementById("resFactores").textContent = factores.length ? factores.join(", ") : "No especificado";
+    document.getElementById("resComentario").textContent = comentario || "Sin comentario.";
+
+    document.getElementById("section2").classList.remove("active");
+    document.getElementById("section3").classList.add("active");
+  }
+
+  function mostrarHistorialYIr() {
+    document.getElementById("section3").classList.remove("active");
+    document.getElementById("section4").classList.add("active");
+    mostrarHistorial();
+  }
+
+  function mostrarHistorial() {
+    const contenedor = document.getElementById("historial");
+    const registros = JSON.parse(localStorage.getItem("emociones")) || [];
+    if (registros.length === 0) {
+      contenedor.innerHTML = "<p class='text-light'>No hay registros aún.</p>";
+      return;
+    }
+
+    contenedor.innerHTML = registros.reverse().map(r => `
+      <div class="border rounded p-3 mb-3 bg-white text-dark">
+        <p><strong>Fecha:</strong> ${r.fecha}</p>
+        <p><strong>Emoción:</strong> ${r.emocion}</p>
+        <p><strong>Otras emociones:</strong> ${r.extras.join(', ') || "Ninguna"}</p>
+        <p><strong>Factores:</strong> ${r.factores.join(', ') || "No especificado"}</p>
+        <p><strong>Comentario:</strong> ${r.comentario || "Sin comentario"}</p>
+      </div>
+    `).join('');
+  }
+
+  function volverInicio() {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.getElementById("section1").classList.add("active");
+    document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+    document.getElementById("comentario").value = "";
+  }
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log("Service Worker registrado"))
+      .catch(err => console.error("Error al registrar SW:", err));
+  }
+</script>
+</body>
+</html>

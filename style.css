@@ -1,0 +1,37 @@
+body {
+    background-image: url('img/back.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+  }
+
+  .blur-box {
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    color: white;
+  }
+
+  .emotion-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+  }
+
+  .emotion-labels img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+
+  .emotion-labels img.selected {
+    opacity: 1;
+    border: 2px solid white;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
