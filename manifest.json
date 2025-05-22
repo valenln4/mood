@@ -1,6 +1,6 @@
 {
     "name": "Mood",
-    "short_name": "Emociones",
+    "short_name": "Mood",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#323131",
